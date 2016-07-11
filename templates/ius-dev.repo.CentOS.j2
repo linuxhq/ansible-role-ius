@@ -1,0 +1,50 @@
+[ius-dev]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Dev
+#baseurl=https://dl.iuscommunity.org/pub/ius/development/CentOS/{{ ansible_distribution_major_version }}/$basearch
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-centos{{ ansible_distribution_major_version }}-dev&arch=$basearch&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_dev is defined %}
+{%   if ius_repos.ius_dev %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+
+[ius-dev-debuginfo]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Dev Debug Info
+#baseurl=https://dl.iuscommunity.org/pub/ius/development/CentOS/{{ ansible_distribution_major_version }}/$basearch/debuginfo
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-centos{{ ansible_distribution_major_version }}-dev-debuginfo&arch=$basearch&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_dev_debuginfo is defined %}
+{%   if ius_repos.ius_dev_debuginfo %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+
+[ius-dev-source]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Dev Source
+#baseurl=https://dl.iuscommunity.org/pub/ius/development/CentOS/{{ ansible_distribution_major_version }}/SRPMS
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-centos{{ ansible_distribution_major_version }}-dev-source&arch=source&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_dev_source is defined %}
+{%   if ius_repos.ius_dev_source %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY

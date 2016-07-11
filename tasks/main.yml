@@ -1,0 +1,61 @@
+---
+- name: Assert that prerequisites exist
+  tags: ius_release
+  assert:
+    that:
+      - ius_pkg is defined
+      - ius_rel is defined
+
+- name: Set ius_dist fact (RedHat)
+  tags: ius_release
+  set_fact:
+    ius_dist: "rhel{{ ius_rel }}"
+  when: ansible_distribution == 'RedHat'
+ 
+- name: Set ius_dist fact (CentOS)
+  tags: ius_release
+  set_fact:
+    ius_dist: "centos{{ ius_rel }}"
+  when: ansible_distribution == 'CentOS'
+
+- name: Execute mktemp
+  tags: ius_release
+  command: mktemp -u --suffix .rpm
+  register: ius_mktemp
+
+- name: Create temporary package 
+  tags: ius_release
+  get_url: url=http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm
+           dest={{ ius_mktemp.stdout }}
+  register: ius_get_url
+  when: ius_mktemp|success
+
+- name: Install ius-release
+  tags: ius_release
+  yum: name={{ item }}
+       state=present
+  register: ius_yum
+  with_items: "{{ ius_mktemp.stdout }}"
+  when: ius_get_url|success
+
+- name: Configure repositories
+  tags: ius_release
+  template: src={{ item.src }}
+            dest={{ item.dst }}
+            owner=root
+            group=root
+            mode=0644
+  with_items:
+    - { src: "ius.repo.{{ ansible_distribution }}.j2", dst: /etc/yum.repos.d/ius.repo }
+    - { src: "ius-archive.repo.{{ ansible_distribution }}.j2", dst: /etc/yum.repos.d/ius-archive.repo }
+    - { src: "ius-dev.repo.{{ ansible_distribution }}.j2", dst: /etc/yum.repos.d/ius-dev.repo }
+    - { src: "ius-testing.repo.{{ ansible_distribution }}.j2", dst: /etc/yum.repos.d/ius-testing.repo }
+  when: ius_yum|success
+
+- name: Erase temporary package
+  tags: ius_release
+  file: path={{ ius_mktemp.stdout }}
+        state=absent
+  when:
+    - ius_mktemp|success
+    - ius_yum|success

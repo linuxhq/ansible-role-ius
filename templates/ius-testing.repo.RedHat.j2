@@ -1,0 +1,50 @@
+[ius-testing]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Testing
+#baseurl=https://dl.iuscommunity.org/pub/ius/testing/Redhat/{{ ansible_distribution_major_version }}/$basearch
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-el{{ ansible_distribution_major_version }}-testing&arch=$basearch&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_testing is defined %}
+{%   if ius_repos.ius_testing %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+
+[ius-testing-debuginfo]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Testing Debug
+#baseurl=https://dl.iuscommunity.org/pub/ius/testing/Redhat/{{ ansible_distribution_major_version }}/$basearch/debuginfo
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-el{{ ansible_distribution_major_version }}-testing-debuginfo&arch=$basearch&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_testing_debuginfo is defined %}
+{%   if ius_repos.ius_testing_debuginfo %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+
+[ius-testing-source]
+name=IUS Community Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch - Testing Source
+#baseurl=https://dl.iuscommunity.org/pub/ius/testing/Redhat/{{ ansible_distribution_major_version }}/SRPMS
+mirrorlist=https://mirrors.iuscommunity.org/mirrorlist?repo=ius-el{{ ansible_distribution_major_version }}-testing-source&arch=source&protocol=http
+failovermethod=priority
+{% if ius_repos.ius_testing_source is defined %}
+{%   if ius_repos.ius_testing_source %}
+enabled=1
+{%   else %}
+enabled=0
+{%   endif %}
+{% else %}
+enabled=0
+{% endif %}
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
