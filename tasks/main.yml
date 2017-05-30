@@ -11,7 +11,7 @@
   set_fact:
     ius_archive: 'Redhat'
     ius_dist: "rhel{{ ius_rel }}"
-    ius_repo: "el{{ ius_rel }}"
+    ius_repo: "ius-el{{ ius_rel }}"
   when: ansible_distribution == 'RedHat'
  
 - name: Set ius facts (CentOS)
