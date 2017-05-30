@@ -6,7 +6,7 @@
       - ius_pkg is defined
       - ius_rel is defined
 
-- name: Set ius_dist fact (RedHat)
+- name: Set ius facts (RedHat)
   tags: ius
   set_fact:
     ius_archive: 'Redhat'
@@ -14,7 +14,7 @@
     ius_repo: "el{{ ius_rel }}"
   when: ansible_distribution == 'RedHat'
  
-- name: Set ius_dist fact (CentOS)
+- name: Set ius facts (CentOS)
   tags: ius
   set_fact:
     ius_archive: 'CentOS'
