@@ -61,7 +61,7 @@
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
   when: ius_yum|success
 
-- name: Ensure that the IUSGPG keys are installed
+- name: Ensure that the IUS GPG keys are installed
   tags: ius
   become: true
   rpm_key:
