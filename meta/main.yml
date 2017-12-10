@@ -4,8 +4,8 @@ dependencies:
 galaxy_info:
   author: tkimball83
   description: RHEL/CentOS - Inline with Upstream Stable
-  license: BSD
-  min_ansible_version: 2.0
+  license: GPLv3
+  min_ansible_version: 2.4
   platforms:
     - name: EL
       versions:
@@ -14,6 +14,5 @@ galaxy_info:
         - 7
   galaxy_tags:
     - ius
-    - packaging
-    - system
+    - rpm
 ...

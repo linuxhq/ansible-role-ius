@@ -44,7 +44,7 @@ All repositories are disabled by default.
 
 ## License
 
-BSD
+GPLv3
 
 ## Author Information
 

@@ -1,12 +1,12 @@
 ---
-- name: Assert that prerequisites exist
+- name: Assert that the prerequisites are defined
   tags: ius
   assert:
     that:
       - ius_pkg is defined
       - ius_rel is defined
 
-- name: Set ius facts (RedHat)
+- name: Setting ius facts (RedHat)
   tags: ius
   set_fact:
     ius_archive: 'Redhat'
@@ -14,7 +14,7 @@
     ius_repo: "ius-el{{ ius_rel }}"
   when: ansible_distribution == 'RedHat'
 
-- name: Set ius facts (CentOS)
+- name: Setting ius facts (CentOS)
   tags: ius
   set_fact:
     ius_archive: 'CentOS'
@@ -22,21 +22,22 @@
     ius_repo: "ius-centos{{ ius_rel }}"
   when: ansible_distribution == 'CentOS'
 
-- name: Generate random package name
+- name: Generating temporary filename via mktemp
   tags: ius
   command: mktemp -u --suffix .rpm
   register: ius_mktemp
 
-- name: Fetch {{ ius_pkg }} to temporary destination
+- name: Downloading package to temporary location
   tags: ius
   get_url:
-    url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
     dest: "{{ ius_mktemp.stdout }}"
+    url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
   register: ius_get_url
   when: ius_mktemp|success
 
-- name: Ensure that the {{ ius_pkg }} package is installed
+- name: Ensure that the ius-release package is installed
   tags: ius
+  become: true
   yum:
     name: "{{ item }}"
     state: present
@@ -44,8 +45,9 @@
   with_items: "{{ ius_mktemp.stdout }}"
   when: ius_get_url|success
 
-- name: Applying {{ ius_pkg }} configurations
+- name: Applying ius repository configurations
   tags: ius
+  become: true
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dst }}"
@@ -59,7 +61,14 @@
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
   when: ius_yum|success
 
-- name: Prune temporary package from the filesystem
+- name: Ensure that the IUSGPG keys are installed
+  tags: ius
+  become: true
+  rpm_key:
+    key: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+    state: present
+
+- name: Purging temporary package from filesystem
   tags: ius
   file:
     path: "{{ ius_mktemp.stdout }}"
