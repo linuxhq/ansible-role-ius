@@ -87,6 +87,7 @@
   when: ius_yum is success
 
 - name: Ensure that the required ius packages are installed
+  tags: ius
   become: true
   yum:
     disable_plugin: "{{ ius_disable_plugin|join(',') }}"
