@@ -47,8 +47,7 @@ None
     - hosts: servers
       roles:
         - role: linuxhq.ius
-          ius_repos:
-            ius: True
+          ius_repository_ius: true
 
 ## License
 
