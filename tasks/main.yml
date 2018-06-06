@@ -6,15 +6,7 @@
       - ius_pkg is defined
       - ius_rel is defined
 
-- name: Setting ius facts (RedHat)
-  tags: ius
-  set_fact:
-    ius_archive: 'Redhat'
-    ius_dist: "rhel{{ ius_rel }}"
-    ius_repo: "ius-el{{ ius_rel }}"
-  when: ansible_distribution == 'RedHat'
-
-- name: Setting ius facts (CentOS)
+- name: Attempting to set CentOS archive, dist, and repo facts
   tags: ius
   set_fact:
     ius_archive: 'CentOS'
@@ -22,30 +14,55 @@
     ius_repo: "ius-centos{{ ius_rel }}"
   when: ansible_distribution == 'CentOS'
 
-- name: Generating temporary filename via mktemp
+- name: Attempting to set RedHat archive, dist, and repo facts
   tags: ius
-  command: mktemp -u --suffix .rpm
-  register: ius_mktemp
+  set_fact:
+    ius_archive: 'Redhat'
+    ius_dist: "rhel{{ ius_rel }}"
+    ius_repo: "ius-el{{ ius_rel }}"
+  when: ansible_distribution == 'RedHat'
 
-- name: Downloading package to temporary location
+- name: Attempting to generate temporary file
+  tags: ius
+  tempfile:
+    prefix: 'ius.'
+    state: file
+    suffix: '.rpm'
+  register: ius_tempfile
+
+- name: Attempting to download package to temporary location
   tags: ius
   get_url:
-    dest: "{{ ius_mktemp.stdout }}"
+    dest: "{{ ius_tempfile.path }}"
+    force: yes
     url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
   register: ius_get_url
-  when: ius_mktemp|success
+  when: ius_tempfile is success
 
-- name: Ensure that the ius-release package is installed
+- name: Ensure that the {{ ius_pkg }} package is installed
   tags: ius
   become: true
   yum:
+    disable_plugin: "{{ ius_disable_plugin|join(',') }}"
+    disablerepo: "{{ ius_disablerepo|join(',') }}"
+    enable_plugin: "{{ ius_enable_plugin|join(',') }}"
+    enablerepo: "{{ ius_enablerepo|join(',') }}"
     name: "{{ item }}"
     state: present
   register: ius_yum
-  with_items: "{{ ius_mktemp.stdout }}"
-  when: ius_get_url|success
+  with_items: "{{ ius_tempfile.path }}"
+  when: ius_get_url is success
 
-- name: Applying ius repository configurations
+- name: Attempting to purge temporary package from the filesystem
+  tags: ius
+  file:
+    path: "{{ ius_tempfile.path }}"
+    state: absent
+  when:
+    - ius_tempfile is success
+    - ius_yum is success
+
+- name: Attempting to overlay ius repository configurations
   tags: ius
   become: true
   template:
@@ -59,21 +76,27 @@
     - { src: ius-archive.repo.j2, dst: /etc/yum.repos.d/ius-archive.repo }
     - { src: ius-dev.repo.j2, dst: /etc/yum.repos.d/ius-dev.repo }
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
-  when: ius_yum|success
+  when: ius_yum is success
 
-- name: Ensure that the IUS GPG keys are installed
+- name: Ensure that the ius gpg keys are installed
   tags: ius
   become: true
   rpm_key:
     key: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
     state: present
+  when: ius_yum is success
 
-- name: Purging temporary package from filesystem
-  tags: ius
-  file:
-    path: "{{ ius_mktemp.stdout }}"
-    state: absent
+- name: Ensure that the required ius packages are installed
+  become: true
+  yum:
+    disable_plugin: "{{ ius_disable_plugin|join(',') }}"
+    disablerepo: "{{ ius_disablerepo|join(',') }}"
+    enable_plugin: "{{ ius_enable_plugin|join(',') }}"
+    enablerepo: "{{ ius_enablerepo|join(',') }}"
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ius_packages }}"
   when:
-    - ius_mktemp|success
-    - ius_yum|success
+    - ius_packages|length > 0
+    - ius_yum is success
 ...
