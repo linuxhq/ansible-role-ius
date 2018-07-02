@@ -1,6 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
+  role_name: ius
   author: tkimball83
   description: RHEL/CentOS - Inline with Upstream Stable
   license: GPLv3
@@ -13,5 +14,4 @@ galaxy_info:
         - 7
   galaxy_tags:
     - ius
-    - yum
 ...
