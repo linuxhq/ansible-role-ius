@@ -47,10 +47,9 @@
     disablerepo: "{{ ius_disablerepo|join(',') }}"
     enable_plugin: "{{ ius_enable_plugin|join(',') }}"
     enablerepo: "{{ ius_enablerepo|join(',') }}"
-    name: "{{ item }}"
+    name: "{{ ius_tempfile.path }}"
     state: present
   register: ius_yum
-  with_items: "{{ ius_tempfile.path }}"
   when: ius_get_url is success
 
 - name: Attempting to purge temporary package from the filesystem
@@ -71,7 +70,7 @@
     owner: root
     group: root
     mode: 0644
-  with_items:
+  loop:
     - { src: ius.repo.j2, dst: /etc/yum.repos.d/ius.repo }
     - { src: ius-archive.repo.j2, dst: /etc/yum.repos.d/ius-archive.repo }
     - { src: ius-dev.repo.j2, dst: /etc/yum.repos.d/ius-dev.repo }
@@ -96,7 +95,7 @@
     enablerepo: "{{ ius_enablerepo|join(',') }}"
     name: "{{ item }}"
     state: present
-  with_items: "{{ ius_packages }}"
+  loop: "{{ ius_packages }}"
   when:
     - ius_packages|length > 0
     - ius_yum is success
