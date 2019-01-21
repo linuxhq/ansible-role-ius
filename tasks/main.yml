@@ -75,6 +75,8 @@
     - { src: ius-archive.repo.j2, dst: /etc/yum.repos.d/ius-archive.repo }
     - { src: ius-dev.repo.j2, dst: /etc/yum.repos.d/ius-dev.repo }
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
+  loop_control:
+    label: "{{ item.src.split('.')[0] }}"
   when: ius_yum is success
 
 - name: Ensure that the ius gpg keys are installed
