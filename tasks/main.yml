@@ -36,8 +36,6 @@
     dest: "{{ ius_tempfile.path }}"
     force: yes
     url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
-  register: ius_get_url
-  when: ius_tempfile is success
 
 - name: Ensure that the {{ ius_pkg }} package is installed
   tags: ius
@@ -49,17 +47,12 @@
     enablerepo: "{{ ius_enablerepo|join(',') or omit }}"
     name: "{{ ius_tempfile.path }}"
     state: present
-  register: ius_yum
-  when: ius_get_url is success
 
 - name: Attempting to purge temporary package from the filesystem
   tags: ius
   file:
     path: "{{ ius_tempfile.path }}"
     state: absent
-  when:
-    - ius_tempfile is success
-    - ius_yum is success
 
 - name: Attempting to overlay ius repository configurations
   tags: ius
@@ -77,7 +70,6 @@
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
   loop_control:
     label: "{{ item.src.split('.')[0] }}"
-  when: ius_yum is success
 
 - name: Ensure that the ius gpg keys are installed
   tags: ius
@@ -85,20 +77,16 @@
   rpm_key:
     key: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
     state: present
-  when: ius_yum is success
 
 - name: Ensure that the required ius packages are installed
   tags: ius
   become: true
   yum:
-    disable_plugin: "{{ ius_disable_plugin|join(',') }}"
-    disablerepo: "{{ ius_disablerepo|join(',') }}"
-    enable_plugin: "{{ ius_enable_plugin|join(',') }}"
-    enablerepo: "{{ ius_enablerepo|join(',') }}"
+    disable_plugin: "{{ ius_disable_plugin|join(',') or omit }}"
+    disablerepo: "{{ ius_disablerepo|join(',') or omit }}"
+    enable_plugin: "{{ ius_enable_plugin|join(',') or omit }}"
+    enablerepo: "{{ ius_enablerepo|join(',') or omit }}"
     name: "{{ item }}"
     state: present
   loop: "{{ ius_packages }}"
-  when:
-    - ius_packages|length > 0
-    - ius_yum is success
 ...
