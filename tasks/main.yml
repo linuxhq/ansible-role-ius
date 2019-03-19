@@ -43,10 +43,10 @@
   tags: ius
   become: true
   yum:
-    disable_plugin: "{{ ius_disable_plugin|join(',') }}"
-    disablerepo: "{{ ius_disablerepo|join(',') }}"
-    enable_plugin: "{{ ius_enable_plugin|join(',') }}"
-    enablerepo: "{{ ius_enablerepo|join(',') }}"
+    disable_plugin: "{{ ius_disable_plugin|join(',') or omit }}"
+    disablerepo: "{{ ius_disablerepo|join(',') or omit }}"
+    enable_plugin: "{{ ius_enable_plugin|join(',') or omit }}"
+    enablerepo: "{{ ius_enablerepo|join(',') or omit }}"
     name: "{{ ius_tempfile.path }}"
     state: present
   register: ius_yum
