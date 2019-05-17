@@ -1,23 +1,23 @@
 [ius-archive]
-name = IUS for Enterprise Linux {{ ansible_distribution_major_version }} - Archive - $basearch
-baseurl = https://repo.ius.io/archive/{{ ansible_distribution_major_version }}/$basearch/
+name = IUS for Enterprise Linux {{ ius_rel }} - Archive - $basearch
+baseurl = https://repo.ius.io/archive/{{ ius_rel }}/$basearch/
 enabled = {{ '1' if ius_repository_ius_archive|bool else '0' }}
 repo_gpgcheck = {{ '1' if ius_repository_ius_archive_repo_gpgcheck|bool else '0' }}
 gpgcheck = {{ '1' if ius_repository_ius_archive_gpgcheck|bool else '0' }}
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
+gpgkey = file://{{ ius_rpm_key }}
 
 [ius-archive-debuginfo]
-name = IUS for Enterprise Linux {{ ansible_distribution_major_version }} - Archive - $basearch - Debug
-baseurl = https://repo.ius.io/archive/{{ ansible_distribution_major_version }}/$basearch/debug/
+name = IUS for Enterprise Linux {{ ius_rel }} - Archive - $basearch - Debug
+baseurl = https://repo.ius.io/archive/{{ ius_rel }}/$basearch/debug/
 enabled = {{ '1' if ius_repository_ius_archive_debuginfo|bool else '0' }}
 repo_gpgcheck = {{ '1' if ius_repository_ius_archive_debuginfo_repo_gpgcheck|bool else '0' }}
 gpgcheck = {{ '1' if ius_repository_ius_archive_debuginfo_gpgcheck|bool else '0' }}
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
+gpgkey = file://{{ ius_rpm_key }}
 
 [ius-archive-source]
-name = IUS for Enterprise Linux {{ ansible_distribution_major_version }} - Archive - Source
-baseurl = https://repo.ius.io/archive/{{ ansible_distribution_major_version }}/src/
+name = IUS for Enterprise Linux {{ ius_rel }} - Archive - Source
+baseurl = https://repo.ius.io/archive/{{ ius_rel }}/src/
 enabled = {{ '1' if ius_repository_ius_archive_source|bool else '0' }}
 repo_gpgcheck = {{ '1' if ius_repository_ius_archive_source_repo_gpgcheck|bool else '0' }}
 gpgcheck = {{ '1' if ius_repository_ius_archive_source_gpgcheck|bool else '0' }}
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
+gpgkey = file://{{ ius_rpm_key }}

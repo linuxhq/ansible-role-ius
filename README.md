@@ -50,6 +50,7 @@ Available variables are listed below, along with default values:
     ius_repository_ius_testing_source: false
     ius_repository_ius_testing_source_gpgcheck: true
     ius_repository_ius_testing_source_repo_gpgcheck: false
+    ius_rpm_key: "{{ '/etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-' + ius_rel }}"
 
 All repositories are disabled by default.
 

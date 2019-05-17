@@ -74,7 +74,7 @@
   tags: ius
   become: true
   rpm_key:
-    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
+    key: "{{ ius_rpm_key }}"
     state: present
 
 - name: Ensure that the required ius packages are installed
