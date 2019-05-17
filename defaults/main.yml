@@ -7,15 +7,30 @@ ius_packages: []
 ius_pkg: ius-release
 ius_rel: "{{ ansible_distribution_major_version }}"
 ius_repository_ius: false
+ius_repository_ius_gpgcheck: true
+ius_repository_ius_repo_gpgcheck: false
 ius_repository_ius_debuginfo: false
+ius_repository_ius_debuginfo_gpgcheck: true
+ius_repository_ius_debuginfo_repo_gpgcheck: false
 ius_repository_ius_source: false
+ius_repository_ius_source_gpgcheck: true
+ius_repository_ius_source_repo_gpgcheck: false
 ius_repository_ius_archive: false
+ius_repository_ius_archive_gpgcheck: true
+ius_repository_ius_archive_repo_gpgcheck: false
 ius_repository_ius_archive_debuginfo: false
+ius_repository_ius_archive_debuginfo_gpgcheck: true
+ius_repository_ius_archive_debuginfo_repo_gpgcheck: false
 ius_repository_ius_archive_source: false
-ius_repository_ius_dev: false
-ius_repository_ius_dev_debuginfo: false
-ius_repository_ius_dev_source: false
+ius_repository_ius_archive_source_gpgcheck: true
+ius_repository_ius_archive_source_repo_gpgcheck: false
 ius_repository_ius_testing: false
+ius_repository_ius_testing_gpgcheck: true
+ius_repository_ius_testing_repo_gpgcheck: false
 ius_repository_ius_testing_debuginfo: false
+ius_repository_ius_testing_debuginfo_gpgcheck: true
+ius_repository_ius_testing_debuginfo_repo_gpgcheck: false
 ius_repository_ius_testing_source: false
+ius_repository_ius_testing_source_gpgcheck: true
+ius_repository_ius_testing_source_repo_gpgcheck: false
 ...

@@ -66,7 +66,6 @@
   loop:
     - { src: ius.repo.j2, dst: /etc/yum.repos.d/ius.repo }
     - { src: ius-archive.repo.j2, dst: /etc/yum.repos.d/ius-archive.repo }
-    - { src: ius-dev.repo.j2, dst: /etc/yum.repos.d/ius-dev.repo }
     - { src: ius-testing.repo.j2, dst: /etc/yum.repos.d/ius-testing.repo }
   loop_control:
     label: "{{ item.src.split('.')[0] }}"
@@ -75,7 +74,7 @@
   tags: ius
   become: true
   rpm_key:
-    key: /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-IUS-7
     state: present
 
 - name: Ensure that the required ius packages are installed
