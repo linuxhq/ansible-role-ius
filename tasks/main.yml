@@ -42,6 +42,7 @@
 - name: Ensure that the {{ ius_pkg }} package is installed
   tags: ius
   become: true
+  register: yum_package
   yum:
     disable_plugin: "{{ ius_disable_plugin|join(',') or omit }}"
     disablerepo: "{{ ius_disablerepo|join(',') or omit }}"
@@ -78,6 +79,7 @@
   rpm_key:
     key: "{{ ius_rpm_key }}"
     state: present
+  ignore_errors: "{{ ansible_check_mode and yum_package.changed }}"
 
 - name: Ensure that the required ius packages are installed
   tags: ius
