@@ -29,6 +29,7 @@
     state: file
     suffix: '.rpm'
   register: ius_tempfile
+  changed_when: false
   check_mode: no
 
 - name: Attempting to download package to temporary location
@@ -37,6 +38,7 @@
     dest: "{{ ius_tempfile.path }}"
     force: yes
     url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
+  changed_when: false
   check_mode: no
 
 - name: Ensure that the {{ ius_pkg }} package is installed
@@ -56,6 +58,7 @@
   file:
     path: "{{ ius_tempfile.path }}"
     state: absent
+  changed_when: false
 
 - name: Attempting to overlay ius repository configurations
   tags: ius
