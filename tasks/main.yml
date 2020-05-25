@@ -6,21 +6,11 @@
       - ius_pkg is defined
       - ius_rel is defined
 
-- name: Attempting to set CentOS archive, dist, and repo facts
+- name: Attempting to set CentOS/RHEL repo and path to upstream RPM
   tags: ius
   set_fact:
-    ius_archive: 'CentOS'
-    ius_dist: "centos{{ ius_rel }}"
     ius_repo: "ius-centos{{ ius_rel }}"
-  when: ansible_distribution == 'CentOS'
-
-- name: Attempting to set RedHat archive, dist, and repo facts
-  tags: ius
-  set_fact:
-    ius_archive: 'Redhat'
-    ius_dist: "rhel{{ ius_rel }}"
-    ius_repo: "ius-el{{ ius_rel }}"
-  when: ansible_distribution == 'RedHat'
+    ius_rpm_path: "{{ ius_pkg }}-el{{ ius_rel }}.rpm"
 
 - name: Attempting to generate temporary file
   tags: ius
@@ -37,7 +27,7 @@
   get_url:
     dest: "{{ ius_tempfile.path }}"
     force: yes
-    url: "http://{{ ius_dist }}.iuscommunity.org/{{ ius_pkg }}.rpm"
+    url: "https://repo.ius.io/{{ ius_rpm_path }}"
   changed_when: false
   check_mode: no
 
