@@ -12,26 +12,7 @@
     ius_repo: "ius-centos{{ ius_rel }}"
     ius_rpm_path: "{{ ius_pkg }}-el{{ ius_rel }}.rpm"
 
-- name: Attempting to generate temporary file
-  tags: ius
-  tempfile:
-    prefix: 'ius.'
-    state: file
-    suffix: '.rpm'
-  register: ius_tempfile
-  changed_when: false
-  check_mode: no
-
-- name: Attempting to download package to temporary location
-  tags: ius
-  get_url:
-    dest: "{{ ius_tempfile.path }}"
-    force: yes
-    url: "https://repo.ius.io/{{ ius_rpm_path }}"
-  changed_when: false
-  check_mode: no
-
-- name: Ensure that the {{ ius_pkg }} package is installed
+- name: Yum enable/disable plugins and repos
   tags: ius
   become: true
   register: yum_package
@@ -40,15 +21,47 @@
     disablerepo: "{{ ius_disablerepo|join(',') or omit }}"
     enable_plugin: "{{ ius_enable_plugin|join(',') or omit }}"
     enablerepo: "{{ ius_enablerepo|join(',') or omit }}"
-    name: "{{ ius_tempfile.path }}"
-    state: present
 
-- name: Attempting to purge temporary package from the filesystem
-  tags: ius
-  file:
-    path: "{{ ius_tempfile.path }}"
-    state: absent
-  changed_when: false
+- name: Get package info
+  package_facts:
+    manager: "auto"
+
+- name: Download package to {{ius_tempfile.path}} and install {{ ius_pkg }}
+  block:
+    - name: Attempting to generate temporary file
+      tags: ius
+      tempfile:
+        prefix: 'ius.'
+        state: file
+        suffix: '.rpm'
+      register: ius_tempfile
+      changed_when: false
+      check_mode: no
+
+    - name: Attempting to download package to temporary location
+      tags: ius
+      get_url:
+        dest: "{{ ius_tempfile.path }}"
+        force: yes
+        url: "https://repo.ius.io/{{ ius_rpm_path }}"
+      changed_when: false
+      check_mode: no
+
+    - name: Ensure that the {{ ius_pkg }} package is installed
+      tags: ius
+      become: true
+      register: yum_package
+      yum:
+        name: "{{ ius_tempfile.path }}"
+        state: present
+
+    - name: Attempting to purge temporary package from the filesystem
+      tags: ius
+      file:
+        path: "{{ ius_tempfile.path }}"
+        state: absent
+      changed_when: false
+  when: ius_pkg not in ansible_facts['packages']
 
 - name: Attempting to overlay ius repository configurations
   tags: ius
