@@ -54,6 +54,7 @@
       yum:
         name: "{{ ius_tempfile.path }}"
         state: present
+        disable_gpg_check: "{{ ius_pkg_disable_gpgcheck }}"
 
     - name: Attempting to purge temporary package from the filesystem
       tags: ius
