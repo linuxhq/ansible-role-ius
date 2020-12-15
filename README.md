@@ -22,6 +22,7 @@ Available variables are listed below, along with default values:
     ius_enablerepo: []
     ius_packages: []
     ius_pkg: ius-release
+    ius_pkg_disable_gpgcheck: false
     ius_rel: "{{ ansible_distribution_major_version }}"
     ius_repository_ius: false
     ius_repository_ius_gpgcheck: true
